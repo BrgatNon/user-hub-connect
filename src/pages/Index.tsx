@@ -1,20 +1,60 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import DashboardCard from "@/components/DashboardCard";
 import { FileText, HelpCircle, Award, Megaphone, Newspaper } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Define the form schema
+const formSchema = z.object({
+  reason: z.string().min(1, "Reason is required"),
+  description: z.string().min(1, "Description is required"),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 const Index = () => {
   const { toast } = useToast();
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      reason: "",
+      description: "",
+    },
+  });
 
   const handleCardClick = (section: string) => {
     setSelectedSection(section);
+    setIsDialogOpen(true);
+  };
+
+  const handleSubmit = (data: FormData) => {
+    console.log("Form submitted:", data);
     toast({
-      title: `${section} selected`,
-      description: "This feature will be implemented in the next iteration.",
+      title: `${selectedSection} submitted`,
+      description: "Your request has been received.",
     });
+    setIsDialogOpen(false);
+    form.reset();
   };
 
   // Sample data for demonstration
@@ -121,6 +161,54 @@ const Index = () => {
             </div>
           </motion.div>
         </div>
+
+        {/* Dialog */}
+        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <AlertDialogContent className="sm:max-w-[425px]">
+            <AlertDialogHeader>
+              <AlertDialogTitle>{selectedSection}</AlertDialogTitle>
+              <AlertDialogDescription>
+                Please provide the following information:
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="py-4">
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="reason"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reason for {selectedSection?.toLowerCase()}</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter your reason" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Provide more details"
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={() => form.reset()}>Cancel</AlertDialogCancel>
+                  <Button type="submit">Submit</Button>
+                </AlertDialogFooter>
+              </form>
+            </div>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
