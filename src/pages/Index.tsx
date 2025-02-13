@@ -232,7 +232,7 @@ const Index = () => {
                               </FormControl>
                             </PopoverTrigger>
                             <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                              <Command>
+                              <Command value={field.value} shouldFilter={false}>
                                 <CommandInput 
                                   placeholder="Search complaint type..."
                                   className="h-9"
@@ -242,12 +242,9 @@ const Index = () => {
                                   {complaintTypes.map((type) => (
                                     <CommandItem
                                       key={type}
-                                      value={type.toLowerCase()}
+                                      value={type}
                                       onSelect={(currentValue) => {
-                                        const selectedType = complaintTypes.find(
-                                          (type) => type.toLowerCase() === currentValue
-                                        );
-                                        form.setValue("complaintType", selectedType || "");
+                                        form.setValue("complaintType", currentValue);
                                         setOpen(false);
                                       }}
                                     >
