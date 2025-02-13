@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import DashboardCard from "@/components/DashboardCard";
@@ -172,40 +173,42 @@ const Index = () => {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <div className="py-4">
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="reason"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Reason for {selectedSection?.toLowerCase()}</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter your reason" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Provide more details"
-                          className="min-h-[100px]"
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => form.reset()}>Cancel</AlertDialogCancel>
-                  <Button type="submit">Submit</Button>
-                </AlertDialogFooter>
-              </form>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="reason"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Reason for {selectedSection?.toLowerCase()}</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter your reason" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Provide more details"
+                            className="min-h-[100px]"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => form.reset()}>Cancel</AlertDialogCancel>
+                    <Button type="submit">Submit</Button>
+                  </AlertDialogFooter>
+                </form>
+              </Form>
             </div>
           </AlertDialogContent>
         </AlertDialog>
