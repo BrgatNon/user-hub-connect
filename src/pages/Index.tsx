@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import DashboardCard from "@/components/DashboardCard";
@@ -217,8 +216,9 @@ const Index = () => {
                                 <Button
                                   variant="outline"
                                   role="combobox"
+                                  type="button"
                                   className={cn(
-                                    "justify-between",
+                                    "w-full justify-between",
                                     !field.value && "text-muted-foreground"
                                   )}
                                 >
@@ -231,17 +231,23 @@ const Index = () => {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="w-full p-0">
+                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                               <Command>
-                                <CommandInput placeholder="Search complaint type..." />
+                                <CommandInput 
+                                  placeholder="Search complaint type..."
+                                  className="h-9"
+                                />
                                 <CommandEmpty>No complaint type found.</CommandEmpty>
-                                <CommandGroup>
+                                <CommandGroup className="max-h-[200px] overflow-auto">
                                   {complaintTypes.map((type) => (
                                     <CommandItem
                                       key={type}
-                                      value={type}
-                                      onSelect={() => {
-                                        form.setValue("complaintType", type);
+                                      value={type.toLowerCase()}
+                                      onSelect={(currentValue) => {
+                                        const selectedType = complaintTypes.find(
+                                          (type) => type.toLowerCase() === currentValue
+                                        );
+                                        form.setValue("complaintType", selectedType || "");
                                         setOpen(false);
                                       }}
                                     >
