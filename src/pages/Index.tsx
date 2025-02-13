@@ -231,8 +231,11 @@ const Index = () => {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                              <Command value={field.value} shouldFilter={false}>
+                            <PopoverContent 
+                              className="w-[--radix-popover-trigger-width] p-0"
+                              align="start"
+                            >
+                              <Command>
                                 <CommandInput 
                                   placeholder="Search complaint type..."
                                   className="h-9"
@@ -243,8 +246,8 @@ const Index = () => {
                                     <CommandItem
                                       key={type}
                                       value={type}
-                                      onSelect={(currentValue) => {
-                                        form.setValue("complaintType", currentValue);
+                                      onSelect={() => {
+                                        form.setValue("complaintType", type);
                                         setOpen(false);
                                       }}
                                     >
