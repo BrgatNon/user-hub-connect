@@ -44,7 +44,7 @@ const complaintTypes = [
   "Property and Land Disputes",
   "Business-Related Complaints",
   "Pet-Related Complaints",
-] as const;
+];
 
 // Define the form schema
 const formSchema = z.object({
@@ -61,6 +61,7 @@ const Index = () => {
   const { toast } = useToast();
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -210,7 +211,7 @@ const Index = () => {
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
                           <FormLabel>Type of Complaint</FormLabel>
-                          <Popover>
+                          <Popover open={open} onOpenChange={setOpen}>
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
@@ -241,6 +242,7 @@ const Index = () => {
                                       value={type}
                                       onSelect={() => {
                                         form.setValue("complaintType", type);
+                                        setOpen(false);
                                       }}
                                     >
                                       <Check
