@@ -17,7 +17,18 @@ const Index = () => {
     });
   };
 
-  const dashboardItems = [
+  // Sample data for demonstration
+  const announcements = [
+    { id: 1, title: "System Maintenance", date: "2024-03-15", content: "Scheduled maintenance on March 20th" },
+    { id: 2, title: "Holiday Notice", date: "2024-03-14", content: "Office closed on upcoming holidays" },
+  ];
+
+  const news = [
+    { id: 1, title: "Q1 Report Released", date: "2024-03-13", content: "First quarter performance results are now available" },
+    { id: 2, title: "New Policy Update", date: "2024-03-12", content: "Important changes to service policies" },
+  ];
+
+  const serviceItems = [
     {
       title: "File Complaint",
       description: "Submit a formal complaint or grievance",
@@ -36,18 +47,6 @@ const Index = () => {
       icon: Award,
       onClick: () => handleCardClick("Request Certificate"),
     },
-    {
-      title: "Announcements",
-      description: "View latest updates and announcements",
-      icon: Megaphone,
-      onClick: () => handleCardClick("Announcements"),
-    },
-    {
-      title: "News & Reports",
-      description: "Access recent news and detailed reports",
-      icon: Newspaper,
-      onClick: () => handleCardClick("News & Reports"),
-    },
   ];
 
   return (
@@ -64,17 +63,65 @@ const Index = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {dashboardItems.map((item, index) => (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Services Section */}
+          <div className="lg:col-span-1 space-y-6">
+            {serviceItems.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <DashboardCard {...item} />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Announcements and News Section */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Announcements */}
             <motion.div
-              key={item.title}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
+              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
             >
-              <DashboardCard {...item} />
+              <div className="flex items-center space-x-3 mb-4">
+                <Megaphone className="w-6 h-6 text-gray-600" />
+                <h2 className="text-xl font-medium text-gray-900">Announcements</h2>
+              </div>
+              <div className="space-y-4">
+                {announcements.map((announcement) => (
+                  <div key={announcement.id} className="border-b border-gray-100 pb-4 last:border-0">
+                    <h3 className="font-medium text-gray-900">{announcement.title}</h3>
+                    <p className="text-sm text-gray-500 mt-1">{announcement.content}</p>
+                    <span className="text-xs text-gray-400 mt-2 block">{announcement.date}</span>
+                  </div>
+                ))}
+              </div>
             </motion.div>
-          ))}
+
+            {/* News & Reports */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+            >
+              <div className="flex items-center space-x-3 mb-4">
+                <Newspaper className="w-6 h-6 text-gray-600" />
+                <h2 className="text-xl font-medium text-gray-900">News & Reports</h2>
+              </div>
+              <div className="space-y-4">
+                {news.map((item) => (
+                  <div key={item.id} className="border-b border-gray-100 pb-4 last:border-0">
+                    <h3 className="font-medium text-gray-900">{item.title}</h3>
+                    <p className="text-sm text-gray-500 mt-1">{item.content}</p>
+                    <span className="text-xs text-gray-400 mt-2 block">{item.date}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>
