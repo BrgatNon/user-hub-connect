@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import DashboardCard from "@/components/DashboardCard";
-import { FileText, HelpCircle, Award, Megaphone, Newspaper } from "lucide-react";
+import { FileText, HelpCircle, Award, Megaphone, Newspaper, Check, ChevronsUpDown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   AlertDialog,
@@ -21,9 +21,36 @@ import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+
+const complaintTypes = [
+  "Physical Assault and Harassment",
+  "Neighborhood Disputes",
+  "Family and Domestic Issues",
+  "Public Disturbance and Ordinance Violations",
+  "Environmental and Sanitation Issues",
+  "Property and Land Disputes",
+  "Business-Related Complaints",
+  "Pet-Related Complaints",
+] as const;
 
 // Define the form schema
 const formSchema = z.object({
+  complaintType: z.string({
+    required_error: "Please select a complaint type.",
+  }),
   reason: z.string().min(1, "Reason is required"),
   description: z.string().min(1, "Description is required"),
 });
@@ -38,6 +65,7 @@ const Index = () => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      complaintType: "",
       reason: "",
       description: "",
     },
@@ -175,6 +203,65 @@ const Index = () => {
             <div className="py-4">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                  {selectedSection === "File Complaint" && (
+                    <FormField
+                      control={form.control}
+                      name="complaintType"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Type of Complaint</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  role="combobox"
+                                  className={cn(
+                                    "justify-between",
+                                    !field.value && "text-muted-foreground"
+                                  )}
+                                >
+                                  {field.value
+                                    ? complaintTypes.find(
+                                        (type) => type === field.value
+                                      )
+                                    : "Select complaint type"}
+                                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-full p-0">
+                              <Command>
+                                <CommandInput placeholder="Search complaint type..." />
+                                <CommandEmpty>No complaint type found.</CommandEmpty>
+                                <CommandGroup>
+                                  {complaintTypes.map((type) => (
+                                    <CommandItem
+                                      key={type}
+                                      value={type}
+                                      onSelect={() => {
+                                        form.setValue("complaintType", type);
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          type === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {type}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
+                        </FormItem>
+                      )}
+                    />
+                  )}
                   <FormField
                     control={form.control}
                     name="reason"
