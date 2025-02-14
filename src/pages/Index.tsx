@@ -26,6 +26,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
   Popover,
@@ -235,34 +236,36 @@ const Index = () => {
                               className="w-[--radix-popover-trigger-width] p-0"
                               align="start"
                             >
-                              <Command>
+                              <Command defaultValue={field.value}>
                                 <CommandInput 
                                   placeholder="Search complaint type..."
                                   className="h-9"
                                 />
                                 <CommandEmpty>No complaint type found.</CommandEmpty>
-                                <CommandGroup className="max-h-[200px] overflow-auto">
-                                  {complaintTypes.map((type) => (
-                                    <CommandItem
-                                      key={type}
-                                      value={type}
-                                      onSelect={() => {
-                                        form.setValue("complaintType", type);
-                                        setOpen(false);
-                                      }}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          type === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                      {type}
-                                    </CommandItem>
-                                  ))}
-                                </CommandGroup>
+                                <CommandList>
+                                  <CommandGroup>
+                                    {complaintTypes.map((type) => (
+                                      <CommandItem
+                                        key={type}
+                                        value={type}
+                                        onSelect={() => {
+                                          form.setValue("complaintType", type);
+                                          setOpen(false);
+                                        }}
+                                      >
+                                        <Check
+                                          className={cn(
+                                            "mr-2 h-4 w-4",
+                                            type === field.value
+                                              ? "opacity-100"
+                                              : "opacity-0"
+                                          )}
+                                        />
+                                        {type}
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
                               </Command>
                             </PopoverContent>
                           </Popover>
