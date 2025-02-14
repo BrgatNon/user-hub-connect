@@ -34,6 +34,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import NavBar from "@/components/NavBar";
 
 const complaintTypes = [
   "Physical Assault and Harassment",
@@ -57,7 +58,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-const Index = () => {
+const UserDashboard = () => {
   const { toast } = useToast();
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -121,6 +122,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <NavBar />
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -315,4 +317,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default UserDashboard;
