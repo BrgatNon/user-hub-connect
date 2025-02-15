@@ -59,6 +59,7 @@ export default function Auth() {
           title: "Success!",
           description: "Please check your email to verify your account.",
         });
+        setIsLoading(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
@@ -66,6 +67,7 @@ export default function Auth() {
         });
 
         if (error) throw error;
+        setIsLoading(false);
       }
     } catch (error: any) {
       toast({
