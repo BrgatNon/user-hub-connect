@@ -1,44 +1,29 @@
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider, useAuth } from "@/components/AuthProvider";
-import AdminDashboard from "@/pages/AdminDashboard";
-import Auth from "@/pages/Auth";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import UserDashboard from "./pages/UserDashboard";
+import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/AdminDashboard";
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { session, isAdmin } = useAuth();
+const queryClient = new QueryClient();
 
-  if (!session) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  if (!isAdmin) {
-    return <Navigate to="/" replace />;
-  }
-
-  return <>{children}</>;
-}
-
-function App() {
-  return (
-    <Router>
-      <AuthProvider>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
         <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route
-            path="/admin-dashboard"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/auth" replace />} />
+          <Route path="/" element={<UserDashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
-        <Toaster />
-      </AuthProvider>
-    </Router>
-  );
-}
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
