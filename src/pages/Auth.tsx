@@ -1,15 +1,17 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function Auth() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { session, isAdmin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -20,6 +22,17 @@ export default function Auth() {
     contactNumber: "",
   });
   const [isSignUp, setIsSignUp] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (session) {
+      if (isAdmin) {
+        navigate("/admin-dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
+    }
+  }, [session, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,28 +60,12 @@ export default function Auth() {
           description: "Please check your email to verify your account.",
         });
       } else {
-        const { data: { user }, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
 
         if (error) throw error;
-
-        // Check if user is admin
-        if (user) {
-          const { data: roleData } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", user.id)
-            .single();
-
-          if (roleData?.role === "admin") {
-            navigate("/admin-dashboard");
-          } else {
-            // Redirect non-admin users to their dashboard or home page
-            navigate("/");
-          }
-        }
       }
     } catch (error: any) {
       toast({
@@ -76,7 +73,6 @@ export default function Auth() {
         description: error.message,
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
