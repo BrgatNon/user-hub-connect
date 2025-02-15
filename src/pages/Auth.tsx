@@ -47,14 +47,28 @@ export default function Auth() {
           description: "Please check your email to verify your account.",
         });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data: { user }, error } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
 
         if (error) throw error;
 
-        navigate("/admin-dashboard");
+        // Check if user is admin
+        if (user) {
+          const { data: roleData } = await supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", user.id)
+            .single();
+
+          if (roleData?.role === "admin") {
+            navigate("/admin-dashboard");
+          } else {
+            // Redirect non-admin users to their dashboard or home page
+            navigate("/");
+          }
+        }
       }
     } catch (error: any) {
       toast({
